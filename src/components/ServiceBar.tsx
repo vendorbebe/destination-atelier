@@ -15,8 +15,8 @@ export function ServiceBar() {
 
   return (
     <div className="w-full bg-[#003b95]">
-      <div className="mx-auto max-w-7xl px-4 py-3 lg:px-8">
-        <div className="flex items-center gap-2 overflow-x-auto sm:gap-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="mx-auto w-full max-w-7xl px-4 py-3 lg:px-8">
+        <div className="flex items-center justify-center gap-2 overflow-x-auto sm:gap-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {SERVICES.map((s) => {
             const Icon = s.icon;
             const isActive = active === s.id;
