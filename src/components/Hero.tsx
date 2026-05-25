@@ -1,10 +1,12 @@
 import { Navbar } from "./Navbar";
+import { ServiceBar } from "./ServiceBar";
 import { SearchBar } from "./SearchBar";
 
 export function Hero() {
   return (
     <section className="relative w-full bg-background">
       <Navbar />
+      <ServiceBar />
 
       <div className="mx-auto flex max-w-7xl flex-col items-center px-4 py-10 text-center sm:py-14 lg:px-8">
         <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
