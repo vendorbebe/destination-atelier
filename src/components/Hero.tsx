@@ -8,7 +8,7 @@ export function Hero() {
       <Navbar />
       <ServiceBar />
 
-      <div className="mx-auto flex max-w-7xl flex-col items-center px-4 pb-10 pt-12 text-center sm:pt-16 lg:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col items-center px-4 pb-12 pt-16 text-center sm:pt-20 lg:px-8">
         <span className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
           Boutique Travel, Reimagined
         </span>
