@@ -28,32 +28,32 @@ export function Navbar() {
           <a href="#journal" className="text-sm font-medium text-foreground/80 transition-colors hover:text-navy">Journal</a>
         </div>
 
-        {/* Right: account + language */}
-        <div className="flex items-center gap-4">
-          <div className="hidden flex-col items-end gap-1 sm:flex">
+        {/* Right: account + language inline */}
+        <div className="flex items-center gap-3">
+          <div className="hidden items-center gap-3 sm:flex">
             <button
               id="account-button"
               type="button"
-              className="group flex items-center gap-2 rounded-full border border-border bg-card px-2 py-1 transition-colors hover:border-gold/40 hover:bg-secondary"
+              className="group inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 transition-colors hover:border-gold/40 hover:bg-secondary"
               aria-label="Moje konto"
             >
-              <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy text-[11px] font-semibold text-primary-foreground">
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-primary-foreground">
                 <User className="h-3.5 w-3.5" />
               </span>
-              <span className="pr-2 text-sm font-medium text-navy">Moje konto</span>
+              <span className="text-sm font-medium text-navy">Moje konto</span>
             </button>
 
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium text-muted-foreground transition-colors hover:text-navy"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-navy transition-colors hover:border-gold/40 hover:bg-secondary"
               >
-                <Globe className="h-3.5 w-3.5" />
+                <Globe className="h-4 w-4" />
                 <span>{lang}</span>
-                <ChevronDown className="h-3 w-3 opacity-70" />
+                <ChevronDown className="h-3.5 w-3.5 opacity-70" />
               </button>
               {langOpen && (
-                <div className="absolute right-0 z-50 mt-1 w-40 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+                <div className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
                   {LANGS.map((l) => (
                     <button
                       key={l.code}
