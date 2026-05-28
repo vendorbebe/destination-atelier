@@ -10,50 +10,54 @@ type Offer = {
   title: string;
   description: string;
   price: string;
+  bookingUrl: string;
 };
 
 const OFFERS: Offer[] = [
   {
     id: "caribbean",
     image: caribbean,
-    location: "Karaiby",
-    title: "Turkusowe wody Saint Lucia",
-    description: "Siedem nocy w butikowym resorcie z prywatną plażą i śniadaniem w cenie.",
-    price: "od 4 890 zł",
+    location: "Caribbean",
+    title: "Turquoise waters of Saint Lucia",
+    description: "Seven nights in a boutique resort with a private beach and breakfast included.",
+    price: "from €1,090",
+    bookingUrl: "https://www.booking.com/searchresults.html?ss=Saint+Lucia",
   },
   {
     id: "alps",
     image: alps,
-    location: "Alpy Szwajcarskie",
-    title: "Alpejski chalet w Zermatt",
-    description: "Pięć dni w drewnianym chalecie z widokiem na Matterhorn i prywatnym spa.",
-    price: "od 3 450 zł",
+    location: "Swiss Alps",
+    title: "Alpine chalet in Zermatt",
+    description: "Five days in a wooden chalet with Matterhorn views and a private spa.",
+    price: "from €770",
+    bookingUrl: "https://www.booking.com/searchresults.html?ss=Zermatt",
   },
   {
     id: "italy",
     image: italy,
-    location: "Toskania, Włochy",
-    title: "Winnice i wille w Val d'Orcia",
-    description: "Tydzień w kamiennej willi pośród cyprysów, z degustacjami u lokalnych winiarzy.",
-    price: "od 2 990 zł",
+    location: "Tuscany, Italy",
+    title: "Vineyards & villas in Val d'Orcia",
+    description: "A week in a stone villa among cypresses, with tastings at local wineries.",
+    price: "from €670",
+    bookingUrl: "https://www.booking.com/searchresults.html?ss=Val+d%27Orcia",
   },
 ];
 
 export function OffersGrid() {
   return (
-    <section id="destinations" className="w-full bg-background px-4 py-12 lg:px-8 lg:py-16">
+    <section id="destinations" className="w-full bg-background px-4 py-16 lg:px-8 lg:py-24">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-end justify-between gap-4">
+        <div className="mb-12 flex items-end justify-between gap-4">
           <div>
-            <span className="mb-2 inline-block text-[11px] font-semibold uppercase tracking-[0.15em] text-gold">
-              Oferty wakacyjne
+            <span className="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">
+              Holiday offers
             </span>
-            <h2 className="font-display text-3xl font-light text-navy sm:text-4xl">
-              Wybrane podróże tego sezonu
+            <h2 className="font-sans text-4xl font-extrabold uppercase leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">
+              Curated trips <span className="text-teal">this season</span>
             </h2>
           </div>
-          <a href="#" className="hidden text-sm font-medium text-navy underline-offset-4 hover:underline sm:inline">
-            Zobacz wszystkie
+          <a href="#" className="hidden text-sm font-semibold uppercase tracking-wider text-navy underline-offset-4 hover:underline sm:inline">
+            See all
           </a>
         </div>
 
@@ -69,7 +73,12 @@ export function OffersGrid() {
 
 function OfferCard({ offer }: { offer: Offer }) {
   return (
-    <article className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]">
+    <a
+      href={offer.bookingUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-elegant)]"
+    >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={offer.image}
@@ -80,26 +89,28 @@ function OfferCard({ offer }: { offer: Offer }) {
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
         <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-background/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-navy backdrop-blur-sm">
-          <MapPin className="h-3 w-3 text-gold" />
+          <MapPin className="h-3 w-3 text-teal" />
           {offer.location}
         </div>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h3 className="font-display text-xl font-medium leading-tight text-navy">{offer.title}</h3>
+        <h3 className="font-sans text-xl font-bold uppercase leading-tight tracking-tight text-navy">
+          {offer.title}
+        </h3>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{offer.description}</p>
 
         <div className="mt-5 flex items-end justify-between border-t border-border pt-4">
           <div>
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Cena</div>
-            <div className="font-display text-lg font-medium text-navy">{offer.price}</div>
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Price</div>
+            <div className="font-sans text-lg font-bold text-navy">{offer.price}</div>
           </div>
-          <button className="inline-flex items-center gap-1.5 rounded-full bg-navy px-4 py-2 text-xs font-medium text-primary-foreground transition-all hover:bg-navy/90">
-            View Details
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-teal px-4 py-2 text-xs font-semibold uppercase tracking-wider text-teal-foreground transition-all group-hover:bg-teal-deep">
+            Book on Booking.com
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-          </button>
+          </span>
         </div>
       </div>
-    </article>
+    </a>
   );
 }
