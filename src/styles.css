@@ -63,6 +63,9 @@
   --color-gold: var(--gold);
   --color-gold-foreground: var(--gold-foreground);
   --color-gold-soft: var(--gold-soft);
+  --color-teal: var(--teal);
+  --color-teal-foreground: var(--teal-foreground);
+  --color-teal-deep: var(--teal-deep);
   --color-navy: var(--navy);
   --color-ivory: var(--ivory);
   --font-display: var(--font-display);
