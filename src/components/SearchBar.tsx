@@ -4,17 +4,17 @@ export function SearchBar() {
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
-      className="mx-auto w-full max-w-4xl overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-[var(--shadow-soft)]"
+      className="mx-auto mt-10 w-full max-w-5xl overflow-hidden rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl backdrop-blur-xl"
     >
-      <div className="flex flex-col gap-1 md:flex-row md:items-center">
+      <div className="flex flex-col gap-1 md:flex-row md:items-stretch">
         <Field icon={<MapPin className="h-4 w-4" />} label="Destination" placeholder="Where to?" />
-        <div className="hidden h-8 w-px bg-border md:block" />
-        <Field icon={<CalendarDays className="h-4 w-4" />} label="Dates" placeholder="Add dates" />
-        <div className="hidden h-8 w-px bg-border md:block" />
+        <div className="hidden w-px bg-border md:block" />
+        <Field icon={<CalendarDays className="h-4 w-4" />} label="Check-in — Check-out" placeholder="Add dates" />
+        <div className="hidden w-px bg-border md:block" />
         <Field icon={<Users className="h-4 w-4" />} label="Guests" placeholder="Add guests" />
         <button
           type="submit"
-          className="group flex items-center justify-center gap-2 rounded-xl bg-navy px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-navy/90 md:rounded-full md:px-7"
+          className="group inline-flex items-center justify-center gap-2 rounded-xl bg-teal px-8 py-4 text-sm font-bold uppercase tracking-wider text-teal-foreground shadow-lg shadow-teal/30 transition-all hover:brightness-110 md:rounded-xl"
         >
           <Search className="h-4 w-4 transition-transform group-hover:scale-110" />
           <span>Search</span>
@@ -26,10 +26,10 @@ export function SearchBar() {
 
 function Field({ icon, label, placeholder }: { icon: React.ReactNode; label: string; placeholder: string }) {
   return (
-    <label className="group flex flex-1 cursor-text items-center gap-3 rounded-xl px-4 py-2.5 transition-colors hover:bg-secondary/40 md:rounded-full">
-      <span className="text-muted-foreground">{icon}</span>
-      <span className="flex flex-col">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{label}</span>
+    <label className="group flex flex-1 cursor-text items-center gap-3 rounded-xl px-4 py-3 transition-colors hover:bg-secondary/50">
+      <span className="text-teal-deep">{icon}</span>
+      <span className="flex flex-1 flex-col">
+        <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-navy">{label}</span>
         <input
           type="text"
           placeholder={placeholder}
