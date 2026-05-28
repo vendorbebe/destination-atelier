@@ -1,77 +1,79 @@
-import { Globe, Menu, X, ChevronDown, User } from "lucide-react";
+import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
 
-const LANGS = [
-  { code: "EN", label: "English" },
-  { code: "PL", label: "Polski" },
-  { code: "NL", label: "Nederlands" },
+const LANGS = ["EN", "PL", "NL", "FR", "DE", "ES", "IT", "PT"];
+
+const NAV = [
+  { label: "VENDORA ECOSYSTEM", sub: "vendora.be", href: "#ecosystem" },
+  { label: "ENERGIDO", sub: "energido.be", href: "#energido" },
+  { label: "ZEXO", sub: "zexo.be", href: "#zexo" },
+  { label: "FAQ", sub: "", href: "#faq" },
+  { label: "CONTACT", sub: "", href: "#contact" },
 ];
 
 export function Navbar() {
   const [lang, setLang] = useState("EN");
-  const [langOpen, setLangOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
 
   return (
-    <header className="w-full border-b border-border/40 bg-background">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 lg:px-8">
+    <header className="absolute inset-x-0 top-0 z-30 w-full">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-5 lg:px-8">
         {/* Logo */}
-        <a href="/" className="font-display text-2xl font-semibold tracking-tight text-navy shrink-0">
-          Voyara<span className="text-gold">.</span>
+        <a href="/" className="flex shrink-0 items-center gap-2 text-white">
+          <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal text-teal-foreground">
+            <Plane className="h-5 w-5 -rotate-45" />
+          </span>
+          <span className="flex flex-col leading-none">
+            <span className="font-display text-lg font-semibold tracking-wide text-teal">VENDORA</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/85">Travel</span>
+          </span>
         </a>
 
         {/* Main nav (center) */}
-        <div className="hidden flex-1 items-center justify-center gap-10 lg:flex">
-          <a href="#plan" className="text-sm font-medium text-foreground/80 transition-colors hover:text-navy">Plan</a>
-          <a href="#escapes" className="text-sm font-medium text-foreground/80 transition-colors hover:text-navy">Escapes</a>
-          <a href="#destinations" className="text-sm font-medium text-foreground/80 transition-colors hover:text-navy">Destinations</a>
-          <a href="#journal" className="text-sm font-medium text-foreground/80 transition-colors hover:text-navy">Journal</a>
+        <div className="hidden flex-1 items-center justify-center gap-7 xl:flex">
+          {NAV.map((n) => (
+            <a key={n.label} href={n.href} className="group flex flex-col items-center text-center">
+              <span className="text-[12px] font-semibold tracking-[0.12em] text-white transition-colors group-hover:text-teal">
+                {n.label}
+              </span>
+              {n.sub && (
+                <span className="text-[10px] font-medium text-white/60 group-hover:text-white/85">{n.sub}</span>
+              )}
+            </a>
+          ))}
         </div>
 
-        {/* Right: account + language inline on ONE line */}
+        {/* Right: login + language */}
         <div className="flex shrink-0 items-center gap-3">
-          <div className="hidden items-center gap-3 sm:flex">
-            <button
-              id="account-button"
-              type="button"
-              className="group inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-full border border-border bg-card px-3 transition-colors hover:border-gold/40 hover:bg-secondary"
-              aria-label="Moje konto"
-            >
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-navy text-primary-foreground">
-                <User className="h-3.5 w-3.5" />
-              </span>
-              <span className="text-sm font-medium text-navy">Moje konto</span>
-            </button>
+          <button
+            id="login-button"
+            type="button"
+            className="hidden h-9 items-center gap-2 whitespace-nowrap rounded-full bg-teal px-4 text-sm font-semibold uppercase tracking-wider text-teal-foreground shadow-lg shadow-teal/30 transition-all hover:brightness-110 sm:inline-flex"
+          >
+            <LogIn className="h-4 w-4" />
+            <span>Login</span>
+          </button>
 
-            <div className="relative">
+          <div className="hidden items-center gap-0.5 rounded-full border border-white/25 bg-white/10 px-1.5 py-1 backdrop-blur-md lg:flex">
+            {LANGS.map((l, i) => (
               <button
-                onClick={() => setLangOpen(!langOpen)}
-                className="inline-flex h-9 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-card px-3 text-sm font-medium text-navy transition-colors hover:border-gold/40 hover:bg-secondary"
+                key={l}
+                onClick={() => setLang(l)}
+                className={`relative px-1.5 text-[11px] font-semibold tracking-wider transition-colors ${
+                  lang === l ? "text-teal" : "text-white/80 hover:text-white"
+                }`}
               >
-                <Globe className="h-4 w-4" />
-                <span>{lang}</span>
-                <ChevronDown className="h-3.5 w-3.5 opacity-70" />
+                {l}
+                {i < LANGS.length - 1 && (
+                  <span className="pointer-events-none absolute -right-0.5 top-1/2 -translate-y-1/2 text-white/30">|</span>
+                )}
               </button>
-              {langOpen && (
-                <div className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-xl border border-border bg-card shadow-lg">
-                  {LANGS.map((l) => (
-                    <button
-                      key={l.code}
-                      onClick={() => { setLang(l.code); setLangOpen(false); }}
-                      className={`flex w-full items-center justify-between px-4 py-2.5 text-sm transition-colors hover:bg-secondary ${lang === l.code ? "text-gold font-medium" : "text-foreground"}`}
-                    >
-                      <span>{l.label}</span>
-                      <span className="text-xs tracking-widest text-muted-foreground">{l.code}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            ))}
           </div>
 
           <button
             onClick={() => setMobile(!mobile)}
-            className="rounded-full border border-border p-2 text-navy lg:hidden"
+            className="rounded-full border border-white/30 bg-white/10 p-2 text-white backdrop-blur-md xl:hidden"
             aria-label="Menu"
           >
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -80,19 +82,31 @@ export function Navbar() {
       </nav>
 
       {mobile && (
-        <div className="mx-4 mb-3 rounded-xl border border-border bg-card p-4 shadow-lg lg:hidden">
+        <div className="mx-4 mb-3 rounded-2xl border border-white/15 bg-navy/95 p-5 text-white shadow-2xl backdrop-blur-xl xl:hidden">
           <div className="flex flex-col gap-3">
-            <a href="#plan" className="text-sm font-medium text-foreground/90">Plan</a>
-            <a href="#escapes" className="text-sm font-medium text-foreground/90">Escapes</a>
-            <a href="#destinations" className="text-sm font-medium text-foreground/90">Destinations</a>
-            <a href="#journal" className="text-sm font-medium text-foreground/90">Journal</a>
-            <hr className="border-border" />
-            <button id="account-button-mobile" className="flex items-center gap-2 text-sm font-medium text-navy">
-              <User className="h-4 w-4" /> Moje konto
+            {NAV.map((n) => (
+              <a key={n.label} href={n.href} className="flex flex-col">
+                <span className="text-sm font-semibold tracking-wider">{n.label}</span>
+                {n.sub && <span className="text-[11px] text-white/60">{n.sub}</span>}
+              </a>
+            ))}
+            <hr className="border-white/15" />
+            <button id="login-button-mobile" className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-teal text-sm font-semibold uppercase tracking-wider text-teal-foreground">
+              <LogIn className="h-4 w-4" /> Login
             </button>
-            <button className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Globe className="h-3.5 w-3.5" /> {lang}
-            </button>
+            <div className="flex flex-wrap gap-2">
+              {LANGS.map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold tracking-wider ${
+                    lang === l ? "border-teal text-teal" : "border-white/20 text-white/80"
+                  }`}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       )}
