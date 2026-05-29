@@ -1,23 +1,25 @@
 import { MapPin, CalendarDays, Users, Search } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function SearchBar() {
+  const { t } = useLanguage();
   return (
     <form
       onSubmit={(e) => e.preventDefault()}
       className="mx-auto mt-10 w-full max-w-5xl overflow-hidden rounded-2xl border border-white/20 bg-white/95 p-2 shadow-2xl backdrop-blur-xl"
     >
       <div className="flex flex-col gap-1 md:flex-row md:items-stretch">
-        <Field icon={<MapPin className="h-4 w-4" />} label="Destination" placeholder="Where to?" />
+        <Field icon={<MapPin className="h-4 w-4" />} label={t.search.destination} placeholder={t.search.destinationPlaceholder} />
         <div className="hidden w-px bg-border md:block" />
-        <Field icon={<CalendarDays className="h-4 w-4" />} label="Check-in — Check-out" placeholder="Add dates" />
+        <Field icon={<CalendarDays className="h-4 w-4" />} label={t.search.dates} placeholder={t.search.datesPlaceholder} />
         <div className="hidden w-px bg-border md:block" />
-        <Field icon={<Users className="h-4 w-4" />} label="Guests" placeholder="Add guests" />
+        <Field icon={<Users className="h-4 w-4" />} label={t.search.guests} placeholder={t.search.guestsPlaceholder} />
         <button
           type="submit"
           className="group inline-flex items-center justify-center gap-2 rounded-xl bg-teal px-8 py-4 text-sm font-bold uppercase tracking-wider text-teal-foreground shadow-lg shadow-teal/30 transition-all hover:brightness-110 md:rounded-xl"
         >
           <Search className="h-4 w-4 transition-transform group-hover:scale-110" />
-          <span>Search</span>
+          <span>{t.search.button}</span>
         </button>
       </div>
     </form>

@@ -1,19 +1,19 @@
 import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
-
-const LANGS = ["EN", "PL", "NL", "FR", "DE", "ES", "IT", "PT"];
-
-const NAV = [
-  { label: "VENDORA ECOSYSTEM", sub: "vendora.be", href: "#ecosystem" },
-  { label: "ENERGIDO", sub: "energido.be", href: "#energido" },
-  { label: "ZEXO", sub: "zexo.be", href: "#zexo" },
-  { label: "FAQ", sub: "", href: "#faq" },
-  { label: "CONTACT", sub: "", href: "#contact" },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
+import { LANGS } from "@/i18n/translations";
 
 export function Navbar() {
-  const [lang, setLang] = useState("EN");
   const [mobile, setMobile] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+
+  const NAV = [
+    { label: t.nav.ecosystem, sub: "vendora.be", href: "#ecosystem" },
+    { label: t.nav.energido, sub: "energido.be", href: "#energido" },
+    { label: t.nav.zexo, sub: "zexo.be", href: "#zexo" },
+    { label: t.nav.faq, sub: "", href: "#faq" },
+    { label: t.nav.contact, sub: "", href: "#contact" },
+  ];
 
   return (
     <header className="absolute inset-x-0 top-0 z-30 w-full">
@@ -51,7 +51,7 @@ export function Navbar() {
             className="hidden h-9 items-center gap-2 whitespace-nowrap rounded-full bg-teal px-4 text-sm font-semibold uppercase tracking-wider text-teal-foreground shadow-lg shadow-teal/30 transition-all hover:brightness-110 sm:inline-flex"
           >
             <LogIn className="h-4 w-4" />
-            <span>Login</span>
+            <span>{t.nav.login}</span>
           </button>
 
           <div className="hidden items-center gap-0.5 rounded-full border border-white/25 bg-white/10 px-1.5 py-1 backdrop-blur-md lg:flex">
@@ -74,7 +74,7 @@ export function Navbar() {
           <button
             onClick={() => setMobile(!mobile)}
             className="rounded-full border border-white/30 bg-white/10 p-2 text-white backdrop-blur-md xl:hidden"
-            aria-label="Menu"
+            aria-label={t.nav.menu}
           >
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -92,7 +92,7 @@ export function Navbar() {
             ))}
             <hr className="border-white/15" />
             <button id="login-button-mobile" className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-teal text-sm font-semibold uppercase tracking-wider text-teal-foreground">
-              <LogIn className="h-4 w-4" /> Login
+              <LogIn className="h-4 w-4" /> {t.nav.login}
             </button>
             <div className="flex flex-wrap gap-2">
               {LANGS.map((l) => (
