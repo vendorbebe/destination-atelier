@@ -51,7 +51,7 @@ export function Navbar() {
             className="hidden h-9 items-center gap-2 whitespace-nowrap rounded-full bg-teal px-4 text-sm font-semibold uppercase tracking-wider text-teal-foreground shadow-lg shadow-teal/30 transition-all hover:brightness-110 sm:inline-flex"
           >
             <LogIn className="h-4 w-4" />
-            <span>Login</span>
+            <span>{t.nav.login}</span>
           </button>
 
           <div className="hidden items-center gap-0.5 rounded-full border border-white/25 bg-white/10 px-1.5 py-1 backdrop-blur-md lg:flex">
@@ -74,7 +74,7 @@ export function Navbar() {
           <button
             onClick={() => setMobile(!mobile)}
             className="rounded-full border border-white/30 bg-white/10 p-2 text-white backdrop-blur-md xl:hidden"
-            aria-label="Menu"
+            aria-label={t.nav.menu}
           >
             {mobile ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
