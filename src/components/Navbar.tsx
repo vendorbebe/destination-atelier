@@ -1,19 +1,19 @@
 import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
-
-const LANGS = ["EN", "PL", "NL", "FR", "DE", "ES", "IT", "PT"];
-
-const NAV = [
-  { label: "VENDORA ECOSYSTEM", sub: "vendora.be", href: "#ecosystem" },
-  { label: "ENERGIDO", sub: "energido.be", href: "#energido" },
-  { label: "ZEXO", sub: "zexo.be", href: "#zexo" },
-  { label: "FAQ", sub: "", href: "#faq" },
-  { label: "CONTACT", sub: "", href: "#contact" },
-];
+import { useLanguage } from "@/i18n/LanguageContext";
+import { LANGS } from "@/i18n/translations";
 
 export function Navbar() {
-  const [lang, setLang] = useState("EN");
   const [mobile, setMobile] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+
+  const NAV = [
+    { label: t.nav.ecosystem, sub: "vendora.be", href: "#ecosystem" },
+    { label: t.nav.energido, sub: "energido.be", href: "#energido" },
+    { label: t.nav.zexo, sub: "zexo.be", href: "#zexo" },
+    { label: t.nav.faq, sub: "", href: "#faq" },
+    { label: t.nav.contact, sub: "", href: "#contact" },
+  ];
 
   return (
     <header className="absolute inset-x-0 top-0 z-30 w-full">
