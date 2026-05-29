@@ -8,6 +8,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 
+import { LanguageProvider } from "@/i18n/LanguageContext";
+import appCss from "../styles.css?url";
+
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
