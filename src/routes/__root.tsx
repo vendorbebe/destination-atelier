@@ -119,6 +119,5 @@ function RootComponent() {
       </LanguageProvider>
     </QueryClientProvider>
   );
-
-  );
 }
+
