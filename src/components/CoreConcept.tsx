@@ -1,15 +1,17 @@
 import { Compass, Sparkles, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 export function CoreConcept() {
+  const { t } = useLanguage();
   return (
     <section className="w-full bg-background px-4 py-16 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-6xl">
         <div className="mb-12 text-center">
           <span className="mb-3 inline-block text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">
-            Two ways to travel
+            {t.concept.eyebrow}
           </span>
           <h2 className="font-sans text-4xl font-extrabold uppercase leading-[1.05] tracking-tight text-navy sm:text-5xl lg:text-6xl">
-            Plan your own, or <span className="text-teal">let us curate</span>
+            {t.concept.titleA} <span className="text-teal">{t.concept.titleB}</span>
           </h2>
         </div>
 
@@ -17,21 +19,21 @@ export function CoreConcept() {
           <ConceptCard
             id="diy"
             icon={<Compass className="h-6 w-6" />}
-            badge="Independent"
-            title="Create your own journey"
-            accent="Do it yourself"
-            description="Complete autonomy. Build your itinerary, choose your stays, and pace your days with our tools at your side."
-            cta="Plan Now"
+            badge={t.concept.diy.badge}
+            title={t.concept.diy.title}
+            accent={t.concept.diy.accent}
+            description={t.concept.diy.description}
+            cta={t.concept.diy.cta}
             variant="navy"
           />
           <ConceptCard
             id="curated"
             icon={<Sparkles className="h-6 w-6" />}
-            badge="Hand-picked"
-            title="Curated last-minute escapes"
-            accent="Ready to go"
-            description="Premium getaways selected by our travel editors. Ready to book, ready to depart — nothing left to compromise."
-            cta="Explore Deals"
+            badge={t.concept.curated.badge}
+            title={t.concept.curated.title}
+            accent={t.concept.curated.accent}
+            description={t.concept.curated.description}
+            cta={t.concept.curated.cta}
             variant="teal"
           />
         </div>
