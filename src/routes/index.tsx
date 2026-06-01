@@ -1,28 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Hero } from "@/components/Hero";
-import { CoreConcept } from "@/components/CoreConcept";
-import { OffersGrid } from "@/components/OffersGrid";
-import { Footer } from "@/components/Footer";
+import { HomePage } from "@/components/HomePage";
+import { buildLocaleHead } from "@/i18n/seo";
 
 export const Route = createFileRoute("/")({
   component: Index,
-  head: () => ({
-    meta: [
-      { title: "Voyara — Boutique Travel, Reimagined" },
-      { name: "description", content: "Curated last-minute escapes and self-planned journeys. Premium boutique travel for considered travellers." },
-      { property: "og:title", content: "Voyara — Boutique Travel, Reimagined" },
-      { property: "og:description", content: "Curated last-minute escapes and self-planned journeys." },
-    ],
-  }),
+  head: () => buildLocaleHead("en"),
 });
 
 function Index() {
-  return (
-    <main>
-      <Hero />
-      <CoreConcept />
-      <OffersGrid />
-      <Footer />
-    </main>
-  );
+  return <HomePage locale="en" />;
 }
