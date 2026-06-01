@@ -1,11 +1,24 @@
 import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import { useLanguage } from "@/i18n/LanguageContext";
-import { LANGS } from "@/i18n/translations";
+import { LANGS, type Lang } from "@/i18n/translations";
+import { DEFAULT_LOCALE } from "@/i18n/seo";
 
 export function Navbar() {
   const [mobile, setMobile] = useState(false);
   const { lang, setLang, t } = useLanguage();
+  const navigate = useNavigate();
+
+  const switchLanguage = (l: Lang) => {
+    setLang(l);
+    const locale = l.toLowerCase();
+    if (locale === DEFAULT_LOCALE) {
+      navigate({ to: "/" });
+    } else {
+      navigate({ to: "/$locale", params: { locale } });
+    }
+  };
 
   const NAV = [
     { label: t.nav.ecosystem, sub: "vendora.be", href: "#ecosystem" },
