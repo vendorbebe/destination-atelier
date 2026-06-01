@@ -71,7 +71,7 @@ export function Navbar() {
             {LANGS.map((l, i) => (
               <button
                 key={l}
-                onClick={() => setLang(l)}
+                onClick={() => switchLanguage(l)}
                 className={`relative px-1.5 text-[11px] font-semibold tracking-wider transition-colors ${
                   lang === l ? "text-teal" : "text-white/80 hover:text-white"
                 }`}
@@ -111,7 +111,7 @@ export function Navbar() {
               {LANGS.map((l) => (
                 <button
                   key={l}
-                  onClick={() => setLang(l)}
+                  onClick={() => switchLanguage(l)}
                   className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold tracking-wider ${
                     lang === l ? "border-teal text-teal" : "border-white/20 text-white/80"
                   }`}
