@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { LOCALES, DEFAULT_LOCALE, SITE_URL } from "@/i18n/seo";
 
-const PAGES = ["", "/destinations", "/packages", "/about", "/contact"];
-const PRIORITIES = [1.0, 0.9, 0.8, 0.6, 0.5];
+// Only routes that actually exist in the app. Add sub-pages here as their
+// route files are created so the sitemap never advertises broken links.
+const PAGES = [""];
+const PRIORITIES = [1.0];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
