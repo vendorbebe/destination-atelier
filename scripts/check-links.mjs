@@ -113,6 +113,68 @@ async function mapLimit(items, limit, fn) {
   return results;
 }
 
+function generateReports(broken, redirects, localeMismatches, ok) {
+  const timestamp = new Date().toISOString();
+  const outDir = new URL("../reports/", import.meta.url).pathname;
+  if (!existsSync(outDir)) {
+    mkdirSync(outDir, { recursive: true });
+  }
+
+  // --- JSON report ---
+  const jsonReport = {
+    generatedAt: timestamp,
+    baseUrl: BASE_URL,
+    summary: {
+      ok: ok.length,
+      redirects: redirects.length,
+      broken: broken.length,
+      localeMismatches: localeMismatches.length,
+    },
+    broken: broken.map((r) => ({
+      url: r.url,
+      status: r.status || 0,
+      error: r.error || null,
+    })),
+    redirects: redirects.map((r) => ({
+      url: r.url,
+      status: r.status,
+      location: r.location,
+    })),
+    localeMismatches: localeMismatches.map((r) => ({
+      url: r.url,
+      finalUrl: r.finalUrl,
+      expectedLocale: r.expected,
+      actualLocale: r.actual,
+    })),
+  };
+  const jsonPath = `${outDir}link-check-report-${timestamp.replace(/[:.]/g, "-")}.json`;
+  writeFileSync(jsonPath, JSON.stringify(jsonReport, null, 2), "utf-8");
+
+  // --- CSV report (single table with all issues) ---
+  const csvLines = [
+    "type,url,status,location_or_final_url,expected_locale,actual_locale,error",
+  ];
+  for (const r of broken) {
+    csvLines.push(`broken,${csvEsc(r.url)},${r.status || 0},,,,"${csvEsc(r.error || "")}"`);
+  }
+  for (const r of redirects) {
+    csvLines.push(`redirect,${csvEsc(r.url)},${r.status},${csvEsc(r.location)},,,`);
+  }
+  for (const r of localeMismatches) {
+    csvLines.push(`locale_mismatch,${csvEsc(r.url)},,,${csvEsc(r.finalUrl)},${r.expected},${r.actual}`);
+  }
+  const csvPath = `${outDir}link-check-report-${timestamp.replace(/[:.]/g, "-")}.csv`;
+  writeFileSync(csvPath, csvLines.join("\n") + "\n", "utf-8");
+
+  return { jsonPath, csvPath };
+}
+
+function csvEsc(str) {
+  if (!str) return "";
+  const s = String(str).replace(/"/g, '""');
+  return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s}"` : s;
+}
+
 async function main() {
   console.log(`🔎 Link-checker — base: ${BASE_URL}\n`);
 
@@ -177,6 +239,11 @@ async function main() {
     }
     console.log("");
   }
+
+  // 4. Generate JSON + CSV reports
+  const { jsonPath, csvPath } = generateReports(broken, redirects, localeMismatches, ok);
+  console.log(`📄 JSON report saved to: ${jsonPath}`);
+  console.log(`📄 CSV  report saved to: ${csvPath}\n`);
 
   if (broken.length || redirects.length || localeMismatches.length) {
     console.log("Done — issues found.");
