@@ -66,19 +66,6 @@ function extractInternalLinks(html, pageUrl) {
   return [...out];
 }
 
-async function checkUrl(url) {
-  try {
-    const res = await fetchWithTimeout(url);
-    const status = res.status;
-    if (status >= 300 && status < 400) {
-      return { url, status, type: "redirect", location: res.headers.get("location") || "" };
-    }
-    if (status >= 400) return { url, status, type: "broken" };
-    return { url, status, type: "ok" };
-  } catch (err) {
-    return { url, status: 0, type: "broken", error: err.message };
-  }
-}
 
 async function checkUrl(url) {
   try {
