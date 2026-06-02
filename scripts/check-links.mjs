@@ -19,6 +19,20 @@ const CONCURRENCY = 8;
 
 const origin = new URL(BASE_URL).origin;
 
+// Keep in sync with src/i18n/seo.ts (EN is the default, served at the root).
+const LOCALES = ["en", "de", "fr", "nl", "pl", "es", "it", "pt"];
+const DEFAULT_LOCALE = "en";
+
+/** Derive the locale of a URL from its first path segment (root = default). */
+function localeOf(url) {
+  try {
+    const seg = new URL(url).pathname.split("/").filter(Boolean)[0];
+    return LOCALES.includes(seg) ? seg : DEFAULT_LOCALE;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+}
+
 async function fetchWithTimeout(url, opts = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -52,6 +66,7 @@ function extractInternalLinks(html, pageUrl) {
   return [...out];
 }
 
+
 async function checkUrl(url) {
   try {
     const res = await fetchWithTimeout(url);
@@ -63,6 +78,25 @@ async function checkUrl(url) {
     return { url, status, type: "ok" };
   } catch (err) {
     return { url, status: 0, type: "broken", error: err.message };
+  }
+}
+
+/**
+ * Follow the full redirect chain and verify the destination's locale still
+ * matches the requested locale (e.g. /de must not land on /en).
+ */
+async function checkLocaleConsistency(url) {
+  const expected = localeOf(url);
+  try {
+    const res = await fetchWithTimeout(url, { redirect: "follow" });
+    const finalUrl = res.url || url;
+    const actual = localeOf(finalUrl);
+    if (actual !== expected) {
+      return { url, finalUrl, expected, actual, mismatch: true };
+    }
+    return { url, finalUrl, expected, actual, mismatch: false };
+  } catch {
+    return null; // unreachable URLs are already flagged as broken elsewhere
   }
 }
 
@@ -110,9 +144,21 @@ async function main() {
   const redirects = all.filter((r) => r.type === "redirect");
   const ok = all.filter((r) => r.type === "ok");
 
-  console.log(`✅ OK:        ${ok.length}`);
-  console.log(`↪️  Redirects: ${redirects.length}`);
-  console.log(`❌ Broken:    ${broken.length}\n`);
+  // 3. Locale-consistency: follow redirects and verify the final URL keeps the
+  //    requested locale (e.g. /de must not resolve to /en). Only locale-bearing
+  //    URLs that are reachable are worth checking.
+  const localeUrls = [...new Set([...sitemapUrls, ...extraLinks])].filter(
+    (u) => !broken.some((b) => b.url === u),
+  );
+  const localeResults = (
+    await mapLimit(localeUrls, CONCURRENCY, checkLocaleConsistency)
+  ).filter(Boolean);
+  const localeMismatches = localeResults.filter((r) => r.mismatch);
+
+  console.log(`✅ OK:                ${ok.length}`);
+  console.log(`↪️  Redirects:         ${redirects.length}`);
+  console.log(`❌ Broken:            ${broken.length}`);
+  console.log(`🌐 Locale mismatches: ${localeMismatches.length}\n`);
 
   if (redirects.length) {
     console.log("↪️  Redirecting links:");
@@ -124,13 +170,21 @@ async function main() {
     for (const r of broken) console.log(`   ${r.status || "ERR"}  ${r.url}${r.error ? `  (${r.error})` : ""}`);
     console.log("");
   }
+  if (localeMismatches.length) {
+    console.log("🌐 Locale mismatches after redirect:");
+    for (const r of localeMismatches) {
+      console.log(`   expected "${r.expected}" but got "${r.actual}"  ${r.url}  →  ${r.finalUrl}`);
+    }
+    console.log("");
+  }
 
-  if (broken.length || redirects.length) {
+  if (broken.length || redirects.length || localeMismatches.length) {
     console.log("Done — issues found.");
     process.exit(1);
   }
-  console.log("Done — all links healthy. 🎉");
+  console.log("Done — all links healthy and locale-consistent. 🎉");
 }
+
 
 main().catch((err) => {
   console.error(`Fatal: ${err.message}`);
