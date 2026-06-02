@@ -19,6 +19,20 @@ const CONCURRENCY = 8;
 
 const origin = new URL(BASE_URL).origin;
 
+// Keep in sync with src/i18n/seo.ts (EN is the default, served at the root).
+const LOCALES = ["en", "de", "fr", "nl", "pl", "es", "it", "pt"];
+const DEFAULT_LOCALE = "en";
+
+/** Derive the locale of a URL from its first path segment (root = default). */
+function localeOf(url) {
+  try {
+    const seg = new URL(url).pathname.split("/").filter(Boolean)[0];
+    return LOCALES.includes(seg) ? seg : DEFAULT_LOCALE;
+  } catch {
+    return DEFAULT_LOCALE;
+  }
+}
+
 async function fetchWithTimeout(url, opts = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
