@@ -80,6 +80,39 @@ async function checkUrl(url) {
   }
 }
 
+async function checkUrl(url) {
+  try {
+    const res = await fetchWithTimeout(url);
+    const status = res.status;
+    if (status >= 300 && status < 400) {
+      return { url, status, type: "redirect", location: res.headers.get("location") || "" };
+    }
+    if (status >= 400) return { url, status, type: "broken" };
+    return { url, status, type: "ok" };
+  } catch (err) {
+    return { url, status: 0, type: "broken", error: err.message };
+  }
+}
+
+/**
+ * Follow the full redirect chain and verify the destination's locale still
+ * matches the requested locale (e.g. /de must not land on /en).
+ */
+async function checkLocaleConsistency(url) {
+  const expected = localeOf(url);
+  try {
+    const res = await fetchWithTimeout(url, { redirect: "follow" });
+    const finalUrl = res.url || url;
+    const actual = localeOf(finalUrl);
+    if (actual !== expected) {
+      return { url, finalUrl, expected, actual, mismatch: true };
+    }
+    return { url, finalUrl, expected, actual, mismatch: false };
+  } catch {
+    return null; // unreachable URLs are already flagged as broken elsewhere
+  }
+}
+
 async function mapLimit(items, limit, fn) {
   const results = [];
   let i = 0;
