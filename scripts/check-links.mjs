@@ -6,12 +6,16 @@
  * checks every internal <a href> link found on each of those pages.
  * Flags any link that is broken (4xx/5xx, network error) or redirecting (3xx).
  *
+ * Generates JSON and CSV reports in the reports/ directory.
+ *
  * Usage:
  *   node scripts/check-links.mjs [baseUrl]
  *   BASE_URL=https://vendoratravel.eu node scripts/check-links.mjs
  *
  * Exits with code 1 if any broken or redirecting links are found.
  */
+
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 
 const BASE_URL = (process.argv[2] || process.env.BASE_URL || "https://vendoratravel.eu").replace(/\/$/, "");
 const TIMEOUT_MS = 15000;
