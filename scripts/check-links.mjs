@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+/**
+ * Sitemap link-checker.
+ *
+ * Crawls every URL listed in /sitemap.xml (all locales), then follows and
+ * checks every internal <a href> link found on each of those pages.
+ * Flags any link that is broken (4xx/5xx, network error) or redirecting (3xx).
+ *
+ * Usage:
+ *   node scripts/check-links.mjs [baseUrl]
+ *   BASE_URL=https://vendoratravel.eu node scripts/check-links.mjs
+ *
+ * Exits with code 1 if any broken or redirecting links are found.
+ */
+
+const BASE_URL = (process.argv[2] || process.env.BASE_URL || "https://vendoratravel.eu").replace(/\/$/, "");
+const TIMEOUT_MS = 15000;
+const CONCURRENCY = 8;
+
+const origin = new URL(BASE_URL).origin;
+
+async function fetchWithTimeout(url, opts = {}) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    return await fetch(url, { redirect: "manual", signal: controller.signal, ...opts });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function getSitemapUrls() {
+  const res = await fetchWithTimeout(`${BASE_URL}/sitemap.xml`, { redirect: "follow" });
+  if (!res.ok) throw new Error(`Could not fetch sitemap.xml (status ${res.status})`);
+  const xml = await res.text();
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+  return [...new Set(locs)];
+}
+
+function extractInternalLinks(html, pageUrl) {
+  const hrefs = [...html.matchAll(/<a\b[^>]*\bhref=["']([^"'#]+)["']/gi)].map((m) => m[1]);
+  const out = new Set();
+  for (const href of hrefs) {
+    if (href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) continue;
+    try {
+      const abs = new URL(href, pageUrl);
+      if (abs.origin === origin) out.add(abs.href.split("#")[0]);
+    } catch {
+      /* ignore malformed hrefs */
+    }
+  }
+  return [...out];
+}
+
+async function checkUrl(url) {
+  try {
+    const res = await fetchWithTimeout(url);
+    const status = res.status;
+    if (status >= 300 && status < 400) {
+      return { url, status, type: "redirect", location: res.headers.get("location") || "" };
+    }
+    if (status >= 400) return { url, status, type: "broken" };
+    return { url, status, type: "ok" };
+  } catch (err) {
+    return { url, status: 0, type: "broken", error: err.message };
+  }
+}
+
+async function mapLimit(items, limit, fn) {
+  const results = [];
+  let i = 0;
+  const workers = Array.from({ length: Math.min(limit, items.length) }, async () => {
+    while (i < items.length) {
+      const idx = i++;
+      results[idx] = await fn(items[idx]);
+    }
+  });
+  await Promise.all(workers);
+  return results;
+}
+
+async function main() {
+  console.log(`🔎 Link-checker — base: ${BASE_URL}\n`);
+
+  const sitemapUrls = await getSitemapUrls();
+  console.log(`Found ${sitemapUrls.length} sitemap URLs (all locales).\n`);
+
+  // 1. Check every sitemap URL and collect their HTML to crawl internal links.
+  const toCheck = new Set(sitemapUrls);
+  const pageResults = await mapLimit(sitemapUrls, CONCURRENCY, async (url) => {
+    const result = await checkUrl(url);
+    if (result.type === "ok") {
+      try {
+        const res = await fetchWithTimeout(url, { redirect: "follow" });
+        const html = await res.text();
+        for (const link of extractInternalLinks(html, url)) toCheck.add(link);
+      } catch {
+        /* page already flagged if unreachable */
+      }
+    }
+    return result;
+  });
+
+  // 2. Check any additional internal links discovered while crawling.
+  const extraLinks = [...toCheck].filter((u) => !sitemapUrls.includes(u));
+  const linkResults = await mapLimit(extraLinks, CONCURRENCY, checkUrl);
+
+  const all = [...pageResults, ...linkResults];
+  const broken = all.filter((r) => r.type === "broken");
+  const redirects = all.filter((r) => r.type === "redirect");
+  const ok = all.filter((r) => r.type === "ok");
+
+  console.log(`✅ OK:        ${ok.length}`);
+  console.log(`↪️  Redirects: ${redirects.length}`);
+  console.log(`❌ Broken:    ${broken.length}\n`);
+
+  if (redirects.length) {
+    console.log("↪️  Redirecting links:");
+    for (const r of redirects) console.log(`   ${r.status}  ${r.url}  →  ${r.location}`);
+    console.log("");
+  }
+  if (broken.length) {
+    console.log("❌ Broken links:");
+    for (const r of broken) console.log(`   ${r.status || "ERR"}  ${r.url}${r.error ? `  (${r.error})` : ""}`);
+    console.log("");
+  }
+
+  if (broken.length || redirects.length) {
+    console.log("Done — issues found.");
+    process.exit(1);
+  }
+  console.log("Done — all links healthy. 🎉");
+}
+
+main().catch((err) => {
+  console.error(`Fatal: ${err.message}`);
+  process.exit(1);
+});
