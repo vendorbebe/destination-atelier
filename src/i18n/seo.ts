@@ -120,13 +120,13 @@ export function buildLocaleHead(
 
   return {
     meta: [
-      { title: cfg.title },
-      { name: "description", content: cfg.description },
+      { title },
+      { name: "description", content: description },
       { name: "keywords", content: cfg.keywords },
       { name: "author", content: "Vendora Travel" },
       { name: "robots", content: "index, follow" },
-      { property: "og:title", content: cfg.title },
-      { property: "og:description", content: cfg.description },
+      { property: "og:title", content: title },
+      { property: "og:description", content: description },
       { property: "og:url", content: canonical },
       { property: "og:site_name", content: "Vendora Travel" },
       { property: "og:locale", content: OG_LOCALE[locale] },
@@ -136,8 +136,8 @@ export function buildLocaleHead(
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "Vendora Travel" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: cfg.title },
-      { name: "twitter:description", content: cfg.description },
+      { name: "twitter:title", content: title },
+      { name: "twitter:description", content: description },
       { name: "twitter:image", content: ogImage },
     ],
     links: [
