@@ -97,10 +97,9 @@ export function Navbar() {
         <div className="mx-4 mb-3 rounded-2xl border border-white/15 bg-navy/95 p-5 text-white shadow-2xl backdrop-blur-xl xl:hidden">
           <div className="flex flex-col gap-3">
             {NAV.map((n) => (
-              <a key={n.label} href={n.href} className="flex flex-col">
+              <Link key={n.label} to={n.href} onClick={() => setMobile(false)} className="flex flex-col">
                 <span className="text-sm font-semibold tracking-wider">{n.label}</span>
-                {n.sub && <span className="text-[11px] text-white/60">{n.sub}</span>}
-              </a>
+              </Link>
             ))}
             <hr className="border-white/15" />
             <button id="login-button-mobile" className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-teal text-sm font-semibold uppercase tracking-wider text-teal-foreground">
