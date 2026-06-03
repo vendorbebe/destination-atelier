@@ -34,7 +34,7 @@ export function Navbar() {
     <header className="absolute inset-x-0 top-0 z-30 w-full">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-5 lg:px-8">
         {/* Logo */}
-        <a href="/" className="flex shrink-0 items-center gap-2 text-white">
+        <a href={homeHref} className="flex shrink-0 items-center gap-2 text-white">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal text-teal-foreground">
             <Plane className="h-5 w-5 -rotate-45" />
           </span>
@@ -47,14 +47,11 @@ export function Navbar() {
         {/* Main nav (center) */}
         <div className="hidden flex-1 items-center justify-center gap-7 xl:flex">
           {NAV.map((n) => (
-            <a key={n.label} href={n.href} className="group flex flex-col items-center text-center">
+            <Link key={n.label} to={n.href} className="group flex flex-col items-center text-center">
               <span className="text-[12px] font-semibold tracking-[0.12em] text-white transition-colors group-hover:text-teal">
                 {n.label}
               </span>
-              {n.sub && (
-                <span className="text-[10px] font-medium text-white/60 group-hover:text-white/85">{n.sub}</span>
-              )}
-            </a>
+            </Link>
           ))}
         </div>
 
