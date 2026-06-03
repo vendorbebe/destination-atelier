@@ -3,8 +3,8 @@ import { LOCALES, DEFAULT_LOCALE, SITE_URL } from "@/i18n/seo";
 
 // Only routes that actually exist in the app. Add sub-pages here as their
 // route files are created so the sitemap never advertises broken links.
-const PAGES = [""];
-const PRIORITIES = [1.0];
+const PAGES = ["", "/destinations", "/packages", "/about", "/contact"];
+const PRIORITIES = [1.0, 0.8, 0.8, 0.6, 0.6];
 
 function localeLoc(locale: string, page: string) {
   return locale === DEFAULT_LOCALE
