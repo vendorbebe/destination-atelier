@@ -101,8 +101,14 @@ const OG_LOCALE: Record<Locale, string> = {
  * per-locale SEO: title, description, keywords, Open Graph, Twitter,
  * canonical, hreflang alternates and TravelAgency JSON-LD.
  */
-export function buildLocaleHead(locale: Locale, path = "") {
+export function buildLocaleHead(
+  locale: Locale,
+  path = "",
+  overrides: { title?: string; description?: string } = {},
+) {
   const cfg = SEO[locale];
+  const title = overrides.title ?? cfg.title;
+  const description = overrides.description ?? cfg.description;
   const canonical = localeUrl(locale, path);
   const ogImage = `${SITE_URL}/og-image.jpg`;
 
