@@ -1,32 +1,34 @@
 import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LANGS, type Lang } from "@/i18n/translations";
 import { DEFAULT_LOCALE } from "@/i18n/seo";
+import { PAGES, PAGE_ORDER, PAGE_SLUGS } from "@/i18n/pages";
 
 export function Navbar() {
   const [mobile, setMobile] = useState(false);
   const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
 
+  const locale = lang.toLowerCase();
+  const localeBase = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
+  const homeHref = localeBase || "/";
+
   const switchLanguage = (l: Lang) => {
     setLang(l);
-    const locale = l.toLowerCase();
-    if (locale === DEFAULT_LOCALE) {
+    const loc = l.toLowerCase();
+    if (loc === DEFAULT_LOCALE) {
       navigate({ to: "/" });
     } else {
-      navigate({ to: "/$locale", params: { locale } });
+      navigate({ to: "/$locale", params: { locale: loc } });
     }
   };
 
-  const NAV = [
-    { label: t.nav.ecosystem, sub: "vendora.be", href: "#ecosystem" },
-    { label: t.nav.energido, sub: "energido.be", href: "#energido" },
-    { label: t.nav.zexo, sub: "zexo.be", href: "#zexo" },
-    { label: t.nav.faq, sub: "", href: "#faq" },
-    { label: t.nav.contact, sub: "", href: "#contact" },
-  ];
+  const NAV = PAGE_ORDER.map((key) => ({
+    label: PAGES[lang][key].navLabel,
+    href: `${localeBase}/${PAGE_SLUGS[key]}`,
+  }));
 
   return (
     <header className="absolute inset-x-0 top-0 z-30 w-full">
