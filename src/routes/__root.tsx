@@ -98,8 +98,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  // Derive the active locale from the URL so the server-rendered <html lang>
+  // matches the page language (strong SEO + accessibility signal).
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const seg = pathname.split("/").filter(Boolean)[0];
+  const lang = (LOCALES as readonly string[]).includes(seg) ? seg : DEFAULT_LOCALE;
+
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <HeadContent />
       </head>
