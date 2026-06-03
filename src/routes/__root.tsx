@@ -4,11 +4,13 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { LOCALES, DEFAULT_LOCALE } from "@/i18n/seo";
 import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
