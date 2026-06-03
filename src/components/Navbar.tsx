@@ -1,38 +1,40 @@
 import { Menu, X, LogIn, Plane } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, Link } from "@tanstack/react-router";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { LANGS, type Lang } from "@/i18n/translations";
 import { DEFAULT_LOCALE } from "@/i18n/seo";
+import { PAGES, PAGE_ORDER, PAGE_SLUGS } from "@/i18n/pages";
 
 export function Navbar() {
   const [mobile, setMobile] = useState(false);
   const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
 
+  const locale = lang.toLowerCase();
+  const localeBase = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
+  const homeHref = localeBase || "/";
+
   const switchLanguage = (l: Lang) => {
     setLang(l);
-    const locale = l.toLowerCase();
-    if (locale === DEFAULT_LOCALE) {
+    const loc = l.toLowerCase();
+    if (loc === DEFAULT_LOCALE) {
       navigate({ to: "/" });
     } else {
-      navigate({ to: "/$locale", params: { locale } });
+      navigate({ to: "/$locale", params: { locale: loc } });
     }
   };
 
-  const NAV = [
-    { label: t.nav.ecosystem, sub: "vendora.be", href: "#ecosystem" },
-    { label: t.nav.energido, sub: "energido.be", href: "#energido" },
-    { label: t.nav.zexo, sub: "zexo.be", href: "#zexo" },
-    { label: t.nav.faq, sub: "", href: "#faq" },
-    { label: t.nav.contact, sub: "", href: "#contact" },
-  ];
+  const NAV = PAGE_ORDER.map((key) => ({
+    label: PAGES[lang][key].navLabel,
+    href: `${localeBase}/${PAGE_SLUGS[key]}`,
+  }));
 
   return (
     <header className="absolute inset-x-0 top-0 z-30 w-full">
       <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-5 lg:px-8">
         {/* Logo */}
-        <a href="/" className="flex shrink-0 items-center gap-2 text-white">
+        <a href={homeHref} className="flex shrink-0 items-center gap-2 text-white">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal text-teal-foreground">
             <Plane className="h-5 w-5 -rotate-45" />
           </span>
@@ -45,14 +47,11 @@ export function Navbar() {
         {/* Main nav (center) */}
         <div className="hidden flex-1 items-center justify-center gap-7 xl:flex">
           {NAV.map((n) => (
-            <a key={n.label} href={n.href} className="group flex flex-col items-center text-center">
+            <Link key={n.label} to={n.href} className="group flex flex-col items-center text-center">
               <span className="text-[12px] font-semibold tracking-[0.12em] text-white transition-colors group-hover:text-teal">
                 {n.label}
               </span>
-              {n.sub && (
-                <span className="text-[10px] font-medium text-white/60 group-hover:text-white/85">{n.sub}</span>
-              )}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -98,10 +97,9 @@ export function Navbar() {
         <div className="mx-4 mb-3 rounded-2xl border border-white/15 bg-navy/95 p-5 text-white shadow-2xl backdrop-blur-xl xl:hidden">
           <div className="flex flex-col gap-3">
             {NAV.map((n) => (
-              <a key={n.label} href={n.href} className="flex flex-col">
+              <Link key={n.label} to={n.href} onClick={() => setMobile(false)} className="flex flex-col">
                 <span className="text-sm font-semibold tracking-wider">{n.label}</span>
-                {n.sub && <span className="text-[11px] text-white/60">{n.sub}</span>}
-              </a>
+              </Link>
             ))}
             <hr className="border-white/15" />
             <button id="login-button-mobile" className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-teal text-sm font-semibold uppercase tracking-wider text-teal-foreground">

@@ -11,8 +11,16 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
+import { Route as PackagesRouteImport } from './routes/packages'
+import { Route as DestinationsRouteImport } from './routes/destinations'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LocaleIndexRouteImport } from './routes/$locale.index'
+import { Route as LocalePackagesRouteImport } from './routes/$locale.packages'
+import { Route as LocaleDestinationsRouteImport } from './routes/$locale.destinations'
+import { Route as LocaleContactRouteImport } from './routes/$locale.contact'
+import { Route as LocaleAboutRouteImport } from './routes/$locale.about'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -22,6 +30,26 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
   id: '/robots.txt',
   path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PackagesRoute = PackagesRouteImport.update({
+  id: '/packages',
+  path: '/packages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DestinationsRoute = DestinationsRouteImport.update({
+  id: '/destinations',
+  path: '/destinations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -34,38 +62,127 @@ const LocaleIndexRoute = LocaleIndexRouteImport.update({
   path: '/$locale/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LocalePackagesRoute = LocalePackagesRouteImport.update({
+  id: '/$locale/packages',
+  path: '/$locale/packages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocaleDestinationsRoute = LocaleDestinationsRouteImport.update({
+  id: '/$locale/destinations',
+  path: '/$locale/destinations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocaleContactRoute = LocaleContactRouteImport.update({
+  id: '/$locale/contact',
+  path: '/$locale/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LocaleAboutRoute = LocaleAboutRouteImport.update({
+  id: '/$locale/about',
+  path: '/$locale/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
+  '/packages': typeof PackagesRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/destinations': typeof LocaleDestinationsRoute
+  '/$locale/packages': typeof LocalePackagesRoute
   '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
+  '/packages': typeof PackagesRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/destinations': typeof LocaleDestinationsRoute
+  '/$locale/packages': typeof LocalePackagesRoute
   '/$locale': typeof LocaleIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/contact': typeof ContactRoute
+  '/destinations': typeof DestinationsRoute
+  '/packages': typeof PackagesRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/$locale/about': typeof LocaleAboutRoute
+  '/$locale/contact': typeof LocaleContactRoute
+  '/$locale/destinations': typeof LocaleDestinationsRoute
+  '/$locale/packages': typeof LocalePackagesRoute
   '/$locale/': typeof LocaleIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/robots.txt' | '/sitemap.xml' | '/$locale/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/destinations'
+    | '/packages'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/$locale/about'
+    | '/$locale/contact'
+    | '/$locale/destinations'
+    | '/$locale/packages'
+    | '/$locale/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/robots.txt' | '/sitemap.xml' | '/$locale'
-  id: '__root__' | '/' | '/robots.txt' | '/sitemap.xml' | '/$locale/'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/destinations'
+    | '/packages'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/$locale/about'
+    | '/$locale/contact'
+    | '/$locale/destinations'
+    | '/$locale/packages'
+    | '/$locale'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/destinations'
+    | '/packages'
+    | '/robots.txt'
+    | '/sitemap.xml'
+    | '/$locale/about'
+    | '/$locale/contact'
+    | '/$locale/destinations'
+    | '/$locale/packages'
+    | '/$locale/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  ContactRoute: typeof ContactRoute
+  DestinationsRoute: typeof DestinationsRoute
+  PackagesRoute: typeof PackagesRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  LocaleAboutRoute: typeof LocaleAboutRoute
+  LocaleContactRoute: typeof LocaleContactRoute
+  LocaleDestinationsRoute: typeof LocaleDestinationsRoute
+  LocalePackagesRoute: typeof LocalePackagesRoute
   LocaleIndexRoute: typeof LocaleIndexRoute
 }
 
@@ -85,6 +202,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RobotsDottxtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/packages': {
+      id: '/packages'
+      path: '/packages'
+      fullPath: '/packages'
+      preLoaderRoute: typeof PackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/destinations': {
+      id: '/destinations'
+      path: '/destinations'
+      fullPath: '/destinations'
+      preLoaderRoute: typeof DestinationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -99,13 +244,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/$locale/packages': {
+      id: '/$locale/packages'
+      path: '/$locale/packages'
+      fullPath: '/$locale/packages'
+      preLoaderRoute: typeof LocalePackagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$locale/destinations': {
+      id: '/$locale/destinations'
+      path: '/$locale/destinations'
+      fullPath: '/$locale/destinations'
+      preLoaderRoute: typeof LocaleDestinationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$locale/contact': {
+      id: '/$locale/contact'
+      path: '/$locale/contact'
+      fullPath: '/$locale/contact'
+      preLoaderRoute: typeof LocaleContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$locale/about': {
+      id: '/$locale/about'
+      path: '/$locale/about'
+      fullPath: '/$locale/about'
+      preLoaderRoute: typeof LocaleAboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  ContactRoute: ContactRoute,
+  DestinationsRoute: DestinationsRoute,
+  PackagesRoute: PackagesRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  LocaleAboutRoute: LocaleAboutRoute,
+  LocaleContactRoute: LocaleContactRoute,
+  LocaleDestinationsRoute: LocaleDestinationsRoute,
+  LocalePackagesRoute: LocalePackagesRoute,
   LocaleIndexRoute: LocaleIndexRoute,
 }
 export const routeTree = rootRouteImport
