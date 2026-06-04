@@ -25,6 +25,17 @@ const CONCURRENCY = 6;
 const LOCALES = ["en", "de", "fr", "nl", "pl", "es", "it", "pt"];
 const DEFAULT_LOCALE = "en";
 
+const OG_LOCALE = {
+  en: "en_US",
+  de: "de_DE",
+  fr: "fr_FR",
+  nl: "nl_NL",
+  pl: "pl_PL",
+  es: "es_ES",
+  it: "it_IT",
+  pt: "pt_PT",
+};
+
 function localeOf(url) {
   try {
     const seg = new URL(url).pathname.split("/").filter(Boolean)[0];
