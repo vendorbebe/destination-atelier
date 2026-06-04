@@ -25,6 +25,17 @@ const CONCURRENCY = 6;
 const LOCALES = ["en", "de", "fr", "nl", "pl", "es", "it", "pt"];
 const DEFAULT_LOCALE = "en";
 
+const OG_LOCALE = {
+  en: "en_US",
+  de: "de_DE",
+  fr: "fr_FR",
+  nl: "nl_NL",
+  pl: "pl_PL",
+  es: "es_ES",
+  it: "it_IT",
+  pt: "pt_PT",
+};
+
 function localeOf(url) {
   try {
     const seg = new URL(url).pathname.split("/").filter(Boolean)[0];
@@ -102,6 +113,45 @@ function auditHtml(url, html) {
   if (!/application\/ld\+json/i.test(html) || !/"@type"\s*:\s*"TravelAgency"/i.test(html)) {
     issues.push("missing TravelAgency JSON-LD");
   }
+
+  // 6. Open Graph (per-locale)
+  const metaContent = (attr, value) => {
+    const re = new RegExp(
+      `<meta[^>]*(?:property|name)=["']${value}["'][^>]*content=["']([^"']*)["']` +
+        `|<meta[^>]*content=["']([^"']*)["'][^>]*(?:property|name)=["']${value}["']`,
+      "i",
+    );
+    const m = html.match(re);
+    return m ? (m[1] ?? m[2] ?? "").trim() : null;
+  };
+
+  const ogLocale = metaContent("property", "og:locale");
+  if (!ogLocale) issues.push("missing og:locale");
+  else if (ogLocale !== OG_LOCALE[expectedLocale]) {
+    issues.push(`og:locale "${ogLocale}" != expected "${OG_LOCALE[expectedLocale]}"`);
+  }
+
+  if (!metaContent("property", "og:title")) issues.push("missing/empty og:title");
+  if (!metaContent("property", "og:description")) issues.push("missing/empty og:description");
+
+  const ogUrl = metaContent("property", "og:url");
+  if (!ogUrl) issues.push("missing og:url");
+  else {
+    try {
+      if (new URL(ogUrl).pathname !== new URL(url).pathname) {
+        issues.push(`og:url "${ogUrl}" does not match page`);
+      }
+    } catch {
+      issues.push(`og:url "${ogUrl}" is not a valid URL`);
+    }
+  }
+
+  // 7. Twitter Card
+  const twCard = metaContent("name", "twitter:card");
+  if (!twCard) issues.push("missing twitter:card");
+  if (!metaContent("name", "twitter:title")) issues.push("missing/empty twitter:title");
+  if (!metaContent("name", "twitter:description")) issues.push("missing/empty twitter:description");
+
 
   return { url, locale: expectedLocale, ok: issues.length === 0, issues };
 }
