@@ -75,7 +75,7 @@ async function mapLimit(items, limit, fn) {
   return results;
 }
 
-function auditHtml(url, html) {
+async function auditHtml(url, html) {
   const expectedLocale = localeOf(url);
   const issues = [];
 
