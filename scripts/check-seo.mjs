@@ -152,8 +152,48 @@ function auditHtml(url, html) {
   if (!metaContent("name", "twitter:title")) issues.push("missing/empty twitter:title");
   if (!metaContent("name", "twitter:description")) issues.push("missing/empty twitter:description");
 
+  // 8. og:image / twitter:image (per-locale path consistency + reachability)
+  const ogImage = metaContent("property", "og:image");
+  const twImage = metaContent("name", "twitter:image");
+
+  const checkImage = async (label, raw) => {
+    if (!raw) {
+      issues.push(`missing ${label}`);
+      return;
+    }
+    let imgUrl;
+    try {
+      imgUrl = new URL(raw, url);
+    } catch {
+      issues.push(`${label} "${raw}" is not a valid URL`);
+      return;
+    }
+    if (!/^https?:$/.test(imgUrl.protocol)) {
+      issues.push(`${label} "${raw}" must be an absolute http(s) URL`);
+    }
+    // Per-locale path consistency: if the image path carries a locale segment, it must match.
+    const imgLocale = localeOf(imgUrl.href);
+    const imgFirstSeg = imgUrl.pathname.split("/").filter(Boolean)[0];
+    if (LOCALES.includes(imgFirstSeg) && imgLocale !== expectedLocale) {
+      issues.push(`${label} locale "${imgLocale}" != expected "${expectedLocale}"`);
+    }
+    // Reachability: must return 200.
+    try {
+      let res = await fetchWithTimeout(imgUrl.href, { method: "HEAD" });
+      if (!res.ok || res.status === 405) {
+        res = await fetchWithTimeout(imgUrl.href, { method: "GET" });
+      }
+      if (!res.ok) issues.push(`${label} "${imgUrl.href}" not reachable (HTTP ${res.status})`);
+    } catch (err) {
+      issues.push(`${label} "${imgUrl.href}" fetch error: ${err.message}`);
+    }
+  };
+
+  await checkImage("og:image", ogImage);
+  await checkImage("twitter:image", twImage);
 
   return { url, locale: expectedLocale, ok: issues.length === 0, issues };
+
 }
 
 async function audit(url) {
