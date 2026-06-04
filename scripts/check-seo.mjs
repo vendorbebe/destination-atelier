@@ -201,7 +201,7 @@ async function audit(url) {
     const res = await fetchWithTimeout(url);
     if (!res.ok) return { url, locale: localeOf(url), ok: false, issues: [`HTTP ${res.status}`] };
     const html = await res.text();
-    return auditHtml(url, html);
+    return await auditHtml(url, html);
   } catch (err) {
     return { url, locale: localeOf(url), ok: false, issues: [`fetch error: ${err.message}`] };
   }
