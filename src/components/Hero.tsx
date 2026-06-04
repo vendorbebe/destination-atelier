@@ -13,6 +13,8 @@ export function Hero() {
         alt="Mediterranean coastal city at golden hour"
         width={1920}
         height={1080}
+        fetchPriority="high"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
       {/* Overlay for contrast */}
